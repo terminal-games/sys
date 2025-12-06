@@ -257,6 +257,7 @@ func Getvfsstat(buf []Statvfs_t, flags int) (n int, err error) {
 		_p0 = unsafe.Pointer(&buf[0])
 		bufsize = unsafe.Sizeof(Statvfs_t{}) * uintptr(len(buf))
 	}
+	panic("syscall not supported in wasm: Syscall(SYS_GETVFSSTAT, uintptr(_p0), bufsize, uintptr(flags))")
 	r0, _, e1 := Syscall(SYS_GETVFSSTAT, uintptr(_p0), bufsize, uintptr(flags))
 	n = int(r0)
 	if e1 != 0 {
