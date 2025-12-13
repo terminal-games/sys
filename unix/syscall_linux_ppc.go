@@ -61,6 +61,7 @@ import (
 //sys	utimes(path string, times *[2]Timeval) (err error)
 
 func Fadvise(fd int, offset int64, length int64, advice int) (err error) {
+	panic("syscall not supported in wasm: Syscall6(SYS_FADVISE64_64, uintptr(fd), uintptr(advice), uintptr(offset>>32), uintptr(offset), uintptr(length>>32), uintptr(length))")
 	_, _, e1 := Syscall6(SYS_FADVISE64_64, uintptr(fd), uintptr(advice), uintptr(offset>>32), uintptr(offset), uintptr(length>>32), uintptr(length))
 	if e1 != 0 {
 		err = errnoErr(e1)
@@ -72,6 +73,7 @@ func seek(fd int, offset int64, whence int) (int64, syscall.Errno) {
 	var newoffset int64
 	offsetLow := uint32(offset & 0xffffffff)
 	offsetHigh := uint32((offset >> 32) & 0xffffffff)
+	panic("syscall not supported in wasm: Syscall6(SYS__LLSEEK, uintptr(fd), uintptr(offsetHigh), uintptr(offsetLow), uintptr(unsafe.Pointer(&newoffset)), uintptr(whence), 0)")
 	_, _, err := Syscall6(SYS__LLSEEK, uintptr(fd), uintptr(offsetHigh), uintptr(offsetLow), uintptr(unsafe.Pointer(&newoffset)), uintptr(whence), 0)
 	return newoffset, err
 }
@@ -85,6 +87,7 @@ func Seek(fd int, offset int64, whence int) (newoffset int64, err error) {
 }
 
 func Fstatfs(fd int, buf *Statfs_t) (err error) {
+	panic("syscall not supported in wasm: Syscall(SYS_FSTATFS64, uintptr(fd), unsafe.Sizeof(*buf), uintptr(unsafe.Pointer(buf)))")
 	_, _, e := Syscall(SYS_FSTATFS64, uintptr(fd), unsafe.Sizeof(*buf), uintptr(unsafe.Pointer(buf)))
 	if e != 0 {
 		err = e
@@ -97,6 +100,7 @@ func Statfs(path string, buf *Statfs_t) (err error) {
 	if err != nil {
 		return err
 	}
+	panic("syscall not supported in wasm: Syscall(SYS_STATFS64, uintptr(unsafe.Pointer(pathp)), unsafe.Sizeof(*buf), uintptr(unsafe.Pointer(buf)))")
 	_, _, e := Syscall(SYS_STATFS64, uintptr(unsafe.Pointer(pathp)), unsafe.Sizeof(*buf), uintptr(unsafe.Pointer(buf)))
 	if e != 0 {
 		err = e

@@ -270,6 +270,7 @@ func Shutdown(s, how int) (err error) {
 }
 
 func Fstatfs(fd int, buf *Statfs_t) (err error) {
+	panic("syscall not supported in wasm: Syscall(SYS_FSTATFS64, uintptr(fd), unsafe.Sizeof(*buf), uintptr(unsafe.Pointer(buf)))")
 	_, _, e := Syscall(SYS_FSTATFS64, uintptr(fd), unsafe.Sizeof(*buf), uintptr(unsafe.Pointer(buf)))
 	if e != 0 {
 		err = e
@@ -282,6 +283,7 @@ func Statfs(path string, buf *Statfs_t) (err error) {
 	if err != nil {
 		return err
 	}
+	panic("syscall not supported in wasm: Syscall(SYS_STATFS64, uintptr(unsafe.Pointer(pathp)), unsafe.Sizeof(*buf), uintptr(unsafe.Pointer(buf)))")
 	_, _, e := Syscall(SYS_STATFS64, uintptr(unsafe.Pointer(pathp)), unsafe.Sizeof(*buf), uintptr(unsafe.Pointer(buf)))
 	if e != 0 {
 		err = e
