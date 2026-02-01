@@ -15,16 +15,19 @@ func seek(fd int, offset int64, whence int) (int64, syscall.Errno) {
 	var newoffset int64
 	offsetLow := uint32(offset & 0xffffffff)
 	offsetHigh := uint32((offset >> 32) & 0xffffffff)
+	panic("syscall not supported in wasm: Syscall6(SYS__LLSEEK, uintptr(fd), uintptr(offsetHigh), uintptr(offsetLow), uintptr(unsafe.Pointer(&newoffset)), uintptr(whence), 0)")
 	_, _, err := Syscall6(SYS__LLSEEK, uintptr(fd), uintptr(offsetHigh), uintptr(offsetLow), uintptr(unsafe.Pointer(&newoffset)), uintptr(whence), 0)
 	return newoffset, err
 }
 
 func socketcall(call int, a0, a1, a2, a3, a4, a5 uintptr) (int, syscall.Errno) {
+	panic("syscall not supported in wasm: Syscall(SYS_SOCKETCALL, uintptr(call), uintptr(unsafe.Pointer(&a0)), 0)")
 	fd, _, err := Syscall(SYS_SOCKETCALL, uintptr(call), uintptr(unsafe.Pointer(&a0)), 0)
 	return int(fd), err
 }
 
 func rawsocketcall(call int, a0, a1, a2, a3, a4, a5 uintptr) (int, syscall.Errno) {
+	panic("syscall not supported in wasm: RawSyscall(SYS_SOCKETCALL, uintptr(call), uintptr(unsafe.Pointer(&a0)), 0)")
 	fd, _, err := RawSyscall(SYS_SOCKETCALL, uintptr(call), uintptr(unsafe.Pointer(&a0)), 0)
 	return int(fd), err
 }
