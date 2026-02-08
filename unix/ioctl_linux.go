@@ -10,6 +10,7 @@ import "unsafe"
 // associated with opened file descriptor fd, and returns a non-negative
 // integer that is returned by the ioctl syscall.
 func IoctlRetInt(fd int, req uint) (int, error) {
+	panic("syscall not supported in wasm: Syscall(SYS_IOCTL, uintptr(fd), uintptr(req), 0)")
 	ret, _, err := Syscall(SYS_IOCTL, uintptr(fd), uintptr(req), 0)
 	if err != 0 {
 		return 0, err

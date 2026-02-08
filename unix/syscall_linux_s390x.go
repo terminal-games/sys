@@ -104,6 +104,7 @@ func (rsa *RawSockaddrNFCLLCP) SetServiceNameLen(length int) {
 // mmap2 also requires arguments to be passed in a struct; it is currently not exposed in <asm/unistd.h>.
 func mmap(addr uintptr, length uintptr, prot int, flags int, fd int, offset int64) (xaddr uintptr, err error) {
 	mmap_args := [6]uintptr{addr, length, uintptr(prot), uintptr(flags), uintptr(fd), uintptr(offset)}
+	panic("syscall not supported in wasm: Syscall(SYS_MMAP, uintptr(unsafe.Pointer(&mmap_args[0])), 0, 0)")
 	r0, _, e1 := Syscall(SYS_MMAP, uintptr(unsafe.Pointer(&mmap_args[0])), 0, 0)
 	xaddr = uintptr(r0)
 	if e1 != 0 {
@@ -141,6 +142,7 @@ const (
 
 func accept4(s int, rsa *RawSockaddrAny, addrlen *_Socklen, flags int) (int, error) {
 	args := [4]uintptr{uintptr(s), uintptr(unsafe.Pointer(rsa)), uintptr(unsafe.Pointer(addrlen)), uintptr(flags)}
+	panic("syscall not supported in wasm: Syscall(SYS_SOCKETCALL, netAccept4, uintptr(unsafe.Pointer(&args)), 0)")
 	fd, _, err := Syscall(SYS_SOCKETCALL, netAccept4, uintptr(unsafe.Pointer(&args)), 0)
 	if err != 0 {
 		return 0, err
@@ -150,6 +152,7 @@ func accept4(s int, rsa *RawSockaddrAny, addrlen *_Socklen, flags int) (int, err
 
 func getsockname(s int, rsa *RawSockaddrAny, addrlen *_Socklen) error {
 	args := [3]uintptr{uintptr(s), uintptr(unsafe.Pointer(rsa)), uintptr(unsafe.Pointer(addrlen))}
+	panic("syscall not supported in wasm: RawSyscall(SYS_SOCKETCALL, netGetSockName, uintptr(unsafe.Pointer(&args)), 0)")
 	_, _, err := RawSyscall(SYS_SOCKETCALL, netGetSockName, uintptr(unsafe.Pointer(&args)), 0)
 	if err != 0 {
 		return err
@@ -159,6 +162,7 @@ func getsockname(s int, rsa *RawSockaddrAny, addrlen *_Socklen) error {
 
 func getpeername(s int, rsa *RawSockaddrAny, addrlen *_Socklen) error {
 	args := [3]uintptr{uintptr(s), uintptr(unsafe.Pointer(rsa)), uintptr(unsafe.Pointer(addrlen))}
+	panic("syscall not supported in wasm: RawSyscall(SYS_SOCKETCALL, netGetPeerName, uintptr(unsafe.Pointer(&args)), 0)")
 	_, _, err := RawSyscall(SYS_SOCKETCALL, netGetPeerName, uintptr(unsafe.Pointer(&args)), 0)
 	if err != 0 {
 		return err
@@ -168,6 +172,7 @@ func getpeername(s int, rsa *RawSockaddrAny, addrlen *_Socklen) error {
 
 func socketpair(domain int, typ int, flags int, fd *[2]int32) error {
 	args := [4]uintptr{uintptr(domain), uintptr(typ), uintptr(flags), uintptr(unsafe.Pointer(fd))}
+	panic("syscall not supported in wasm: RawSyscall(SYS_SOCKETCALL, netSocketPair, uintptr(unsafe.Pointer(&args)), 0)")
 	_, _, err := RawSyscall(SYS_SOCKETCALL, netSocketPair, uintptr(unsafe.Pointer(&args)), 0)
 	if err != 0 {
 		return err
@@ -177,6 +182,7 @@ func socketpair(domain int, typ int, flags int, fd *[2]int32) error {
 
 func bind(s int, addr unsafe.Pointer, addrlen _Socklen) error {
 	args := [3]uintptr{uintptr(s), uintptr(addr), uintptr(addrlen)}
+	panic("syscall not supported in wasm: Syscall(SYS_SOCKETCALL, netBind, uintptr(unsafe.Pointer(&args)), 0)")
 	_, _, err := Syscall(SYS_SOCKETCALL, netBind, uintptr(unsafe.Pointer(&args)), 0)
 	if err != 0 {
 		return err
@@ -186,6 +192,7 @@ func bind(s int, addr unsafe.Pointer, addrlen _Socklen) error {
 
 func connect(s int, addr unsafe.Pointer, addrlen _Socklen) error {
 	args := [3]uintptr{uintptr(s), uintptr(addr), uintptr(addrlen)}
+	panic("syscall not supported in wasm: Syscall(SYS_SOCKETCALL, netConnect, uintptr(unsafe.Pointer(&args)), 0)")
 	_, _, err := Syscall(SYS_SOCKETCALL, netConnect, uintptr(unsafe.Pointer(&args)), 0)
 	if err != 0 {
 		return err
@@ -195,6 +202,7 @@ func connect(s int, addr unsafe.Pointer, addrlen _Socklen) error {
 
 func socket(domain int, typ int, proto int) (int, error) {
 	args := [3]uintptr{uintptr(domain), uintptr(typ), uintptr(proto)}
+	panic("syscall not supported in wasm: RawSyscall(SYS_SOCKETCALL, netSocket, uintptr(unsafe.Pointer(&args)), 0)")
 	fd, _, err := RawSyscall(SYS_SOCKETCALL, netSocket, uintptr(unsafe.Pointer(&args)), 0)
 	if err != 0 {
 		return 0, err
@@ -204,6 +212,7 @@ func socket(domain int, typ int, proto int) (int, error) {
 
 func getsockopt(s int, level int, name int, val unsafe.Pointer, vallen *_Socklen) error {
 	args := [5]uintptr{uintptr(s), uintptr(level), uintptr(name), uintptr(val), uintptr(unsafe.Pointer(vallen))}
+	panic("syscall not supported in wasm: Syscall(SYS_SOCKETCALL, netGetSockOpt, uintptr(unsafe.Pointer(&args)), 0)")
 	_, _, err := Syscall(SYS_SOCKETCALL, netGetSockOpt, uintptr(unsafe.Pointer(&args)), 0)
 	if err != 0 {
 		return err
@@ -213,6 +222,7 @@ func getsockopt(s int, level int, name int, val unsafe.Pointer, vallen *_Socklen
 
 func setsockopt(s int, level int, name int, val unsafe.Pointer, vallen uintptr) error {
 	args := [5]uintptr{uintptr(s), uintptr(level), uintptr(name), uintptr(val), vallen}
+	panic("syscall not supported in wasm: Syscall(SYS_SOCKETCALL, netSetSockOpt, uintptr(unsafe.Pointer(&args)), 0)")
 	_, _, err := Syscall(SYS_SOCKETCALL, netSetSockOpt, uintptr(unsafe.Pointer(&args)), 0)
 	if err != 0 {
 		return err
@@ -226,6 +236,7 @@ func recvfrom(s int, p []byte, flags int, from *RawSockaddrAny, fromlen *_Sockle
 		base = uintptr(unsafe.Pointer(&p[0]))
 	}
 	args := [6]uintptr{uintptr(s), base, uintptr(len(p)), uintptr(flags), uintptr(unsafe.Pointer(from)), uintptr(unsafe.Pointer(fromlen))}
+	panic("syscall not supported in wasm: Syscall(SYS_SOCKETCALL, netRecvFrom, uintptr(unsafe.Pointer(&args)), 0)")
 	n, _, err := Syscall(SYS_SOCKETCALL, netRecvFrom, uintptr(unsafe.Pointer(&args)), 0)
 	if err != 0 {
 		return 0, err
@@ -239,6 +250,7 @@ func sendto(s int, p []byte, flags int, to unsafe.Pointer, addrlen _Socklen) err
 		base = uintptr(unsafe.Pointer(&p[0]))
 	}
 	args := [6]uintptr{uintptr(s), base, uintptr(len(p)), uintptr(flags), uintptr(to), uintptr(addrlen)}
+	panic("syscall not supported in wasm: Syscall(SYS_SOCKETCALL, netSendTo, uintptr(unsafe.Pointer(&args)), 0)")
 	_, _, err := Syscall(SYS_SOCKETCALL, netSendTo, uintptr(unsafe.Pointer(&args)), 0)
 	if err != 0 {
 		return err
@@ -248,6 +260,7 @@ func sendto(s int, p []byte, flags int, to unsafe.Pointer, addrlen _Socklen) err
 
 func recvmsg(s int, msg *Msghdr, flags int) (int, error) {
 	args := [3]uintptr{uintptr(s), uintptr(unsafe.Pointer(msg)), uintptr(flags)}
+	panic("syscall not supported in wasm: Syscall(SYS_SOCKETCALL, netRecvMsg, uintptr(unsafe.Pointer(&args)), 0)")
 	n, _, err := Syscall(SYS_SOCKETCALL, netRecvMsg, uintptr(unsafe.Pointer(&args)), 0)
 	if err != 0 {
 		return 0, err
@@ -257,6 +270,7 @@ func recvmsg(s int, msg *Msghdr, flags int) (int, error) {
 
 func sendmsg(s int, msg *Msghdr, flags int) (int, error) {
 	args := [3]uintptr{uintptr(s), uintptr(unsafe.Pointer(msg)), uintptr(flags)}
+	panic("syscall not supported in wasm: Syscall(SYS_SOCKETCALL, netSendMsg, uintptr(unsafe.Pointer(&args)), 0)")
 	n, _, err := Syscall(SYS_SOCKETCALL, netSendMsg, uintptr(unsafe.Pointer(&args)), 0)
 	if err != 0 {
 		return 0, err
@@ -266,6 +280,7 @@ func sendmsg(s int, msg *Msghdr, flags int) (int, error) {
 
 func Listen(s int, n int) error {
 	args := [2]uintptr{uintptr(s), uintptr(n)}
+	panic("syscall not supported in wasm: Syscall(SYS_SOCKETCALL, netListen, uintptr(unsafe.Pointer(&args)), 0)")
 	_, _, err := Syscall(SYS_SOCKETCALL, netListen, uintptr(unsafe.Pointer(&args)), 0)
 	if err != 0 {
 		return err
@@ -275,6 +290,7 @@ func Listen(s int, n int) error {
 
 func Shutdown(s, how int) error {
 	args := [2]uintptr{uintptr(s), uintptr(how)}
+	panic("syscall not supported in wasm: Syscall(SYS_SOCKETCALL, netShutdown, uintptr(unsafe.Pointer(&args)), 0)")
 	_, _, err := Syscall(SYS_SOCKETCALL, netShutdown, uintptr(unsafe.Pointer(&args)), 0)
 	if err != 0 {
 		return err
