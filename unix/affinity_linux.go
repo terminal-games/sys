@@ -17,6 +17,7 @@ const cpuSetSize = _CPU_SETSIZE / _NCPUBITS
 type CPUSet [cpuSetSize]cpuMask
 
 func schedAffinity(trap uintptr, pid int, set *CPUSet) error {
+	panic("syscall not supported in wasm: RawSyscall(trap, uintptr(pid), uintptr(unsafe.Sizeof(*set)), uintptr(unsafe.Pointer(set)))")
 	_, _, e := RawSyscall(trap, uintptr(pid), uintptr(unsafe.Sizeof(*set)), uintptr(unsafe.Pointer(set)))
 	if e != 0 {
 		return errnoErr(e)

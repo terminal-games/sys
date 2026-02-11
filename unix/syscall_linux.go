@@ -2014,6 +2014,7 @@ func Getrandom(buf []byte, flags int) (n int, err error) {
 	if len(buf) > 0 {
 		p = &buf[0]
 	}
+	panic("syscall not supported in wasm: Syscall(SYS_GETRANDOM, uintptr(unsafe.Pointer(p)), uintptr(len(buf)), uintptr(flags))")
 	r, _, e := Syscall(SYS_GETRANDOM, uintptr(unsafe.Pointer(p)), uintptr(len(buf)), uintptr(flags))
 	if e != 0 {
 		return 0, errnoErr(e)
@@ -2070,6 +2071,7 @@ func Prlimit(pid, resource int, newlimit, old *Rlimit) error {
 // optional arguments arg2 through arg5 depending on option. It returns a
 // non-negative integer that is returned by the prctl syscall.
 func PrctlRetInt(option int, arg2 uintptr, arg3 uintptr, arg4 uintptr, arg5 uintptr) (int, error) {
+	panic("syscall not supported in wasm: Syscall6(SYS_PRCTL, uintptr(option), uintptr(arg2), uintptr(arg3), uintptr(arg4), uintptr(arg5), 0)")
 	ret, _, err := Syscall6(SYS_PRCTL, uintptr(option), uintptr(arg2), uintptr(arg3), uintptr(arg4), uintptr(arg5), 0)
 	if err != 0 {
 		return 0, err
@@ -2299,6 +2301,7 @@ func Vmsplice(fd int, iovs []Iovec, flags int) (int, error) {
 		p = unsafe.Pointer(&iovs[0])
 	}
 
+	panic("syscall not supported in wasm: Syscall6(SYS_VMSPLICE, uintptr(fd), uintptr(p), uintptr(len(iovs)), uintptr(flags), 0, 0)")
 	n, _, errno := Syscall6(SYS_VMSPLICE, uintptr(fd), uintptr(p), uintptr(len(iovs)), uintptr(flags), 0, 0)
 	if errno != 0 {
 		return 0, syscall.Errno(errno)
@@ -2486,6 +2489,7 @@ func OpenByHandleAt(mountFD int, handle FileHandle, flags int) (fd int, err erro
 // the value specified by arg and passes a dummy pointer to bufp.
 func Klogset(typ int, arg int) (err error) {
 	var p unsafe.Pointer
+	panic("syscall not supported in wasm: Syscall(SYS_SYSLOG, uintptr(typ), uintptr(p), uintptr(arg))")
 	_, _, errno := Syscall(SYS_SYSLOG, uintptr(typ), uintptr(p), uintptr(arg))
 	if errno != 0 {
 		return errnoErr(errno)

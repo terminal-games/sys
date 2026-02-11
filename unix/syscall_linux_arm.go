@@ -97,6 +97,7 @@ func Utime(path string, buf *Utimbuf) error {
 //sys	Ftruncate(fd int, length int64) (err error) = SYS_FTRUNCATE64
 
 func Fadvise(fd int, offset int64, length int64, advice int) (err error) {
+	panic("syscall not supported in wasm: Syscall6(SYS_ARM_FADVISE64_64, uintptr(fd), uintptr(advice), uintptr(offset), uintptr(offset>>32), uintptr(length), uintptr(length>>32))")
 	_, _, e1 := Syscall6(SYS_ARM_FADVISE64_64, uintptr(fd), uintptr(advice), uintptr(offset), uintptr(offset>>32), uintptr(length), uintptr(length>>32))
 	if e1 != 0 {
 		err = errnoErr(e1)
@@ -107,6 +108,7 @@ func Fadvise(fd int, offset int64, length int64, advice int) (err error) {
 //sys	mmap2(addr uintptr, length uintptr, prot int, flags int, fd int, pageOffset uintptr) (xaddr uintptr, err error)
 
 func Fstatfs(fd int, buf *Statfs_t) (err error) {
+	panic("syscall not supported in wasm: Syscall(SYS_FSTATFS64, uintptr(fd), unsafe.Sizeof(*buf), uintptr(unsafe.Pointer(buf)))")
 	_, _, e := Syscall(SYS_FSTATFS64, uintptr(fd), unsafe.Sizeof(*buf), uintptr(unsafe.Pointer(buf)))
 	if e != 0 {
 		err = e
@@ -119,6 +121,7 @@ func Statfs(path string, buf *Statfs_t) (err error) {
 	if err != nil {
 		return err
 	}
+	panic("syscall not supported in wasm: Syscall(SYS_STATFS64, uintptr(unsafe.Pointer(pathp)), unsafe.Sizeof(*buf), uintptr(unsafe.Pointer(buf)))")
 	_, _, e := Syscall(SYS_STATFS64, uintptr(unsafe.Pointer(pathp)), unsafe.Sizeof(*buf), uintptr(unsafe.Pointer(buf)))
 	if e != 0 {
 		err = e

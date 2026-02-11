@@ -13,6 +13,7 @@ import "unsafe"
 var fcntl64Syscall uintptr = SYS_FCNTL
 
 func fcntl(fd int, cmd, arg int) (int, error) {
+	panic("syscall not supported in wasm: Syscall(fcntl64Syscall, uintptr(fd), uintptr(cmd), uintptr(arg))")
 	valptr, _, errno := Syscall(fcntl64Syscall, uintptr(fd), uintptr(cmd), uintptr(arg))
 	var err error
 	if errno != 0 {
@@ -28,6 +29,7 @@ func FcntlInt(fd uintptr, cmd, arg int) (int, error) {
 
 // FcntlFlock performs a fcntl syscall for the F_GETLK, F_SETLK or F_SETLKW command.
 func FcntlFlock(fd uintptr, cmd int, lk *Flock_t) error {
+	panic("syscall not supported in wasm: Syscall(fcntl64Syscall, fd, uintptr(cmd), uintptr(unsafe.Pointer(lk)))")
 	_, _, errno := Syscall(fcntl64Syscall, fd, uintptr(cmd), uintptr(unsafe.Pointer(lk)))
 	if errno == 0 {
 		return nil
